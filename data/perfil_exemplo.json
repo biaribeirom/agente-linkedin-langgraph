@@ -1,0 +1,43 @@
+{
+  "perfil": {
+    "nome": "Marina Alves",
+    "profissao": "Estudante de Ciência de Dados",
+    "area": "Dados e Inteligência Artificial"
+  },
+  "fatos_autorizados": [
+    {
+      "id": "F01",
+      "descricao": "Marina cursa graduação em Ciência de Dados."
+    },
+    {
+      "id": "F02",
+      "descricao": "Marina participou de um workshop universitário sobre IA aplicada."
+    },
+    {
+      "id": "F03",
+      "descricao": "Marina apresentou um projeto de análise de dados durante esse workshop."
+    }
+  ],
+  "preferencias_estilo": {
+    "tom": "Pessoal, natural e otimista.",
+    "linguagem": "Clara, sem formalidade excessiva.",
+    "tamanho": "Posts relativamente curtos.",
+    "emojis": "No máximo um emoji por post.",
+    "evitar": [
+      "Frases genéricas.",
+      "Exageros profissionais."
+    ]
+  },
+  "exemplos_posts": [
+    {
+      "id": "E01",
+      "fatos_relacionados": ["F01", "F02"],
+      "texto": "Participei de um workshop sobre IA aplicada aqui na universidade e saí com várias ideias na cabeça. Estudar Ciência de Dados fica ainda mais interessante quando a gente vê a teoria ganhando forma. 💡"
+    },
+    {
+      "id": "E02",
+      "fatos_relacionados": ["F02", "F03"],
+      "texto": "Durante o workshop de IA aplicada, apresentei um projeto de análise de dados. Explicar o raciocínio por trás da análise me ajudou a enxergar o projeto de outro jeito. Comunicar os resultados também faz parte do trabalho com dados."
+    }
+  ]
+}

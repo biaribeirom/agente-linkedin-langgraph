@@ -218,3 +218,30 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Credenciais
+.env
+.env.*
+!.env.example
+
+# Ambiente virtual
+.venv/
+
+# Dados pessoais reais (apenas o perfil de exemplo é versionado)
+data/*.json
+!data/perfil_exemplo.json
+
+# Estado persistente do agente
+checkpoints/
+*.sqlite
+*.sqlite3
+*.db
+# Arquivos auxiliares do SQLite (-wal, -shm, -journal)
+*.sqlite-*
+*.sqlite3-*
+*.db-*
+
+# Arquivos temporários
+__pycache__/
+.pytest_cache/
