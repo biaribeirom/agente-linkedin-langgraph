@@ -1,0 +1,54 @@
+==============================================================================
+Teste A — Solicitação com informações suficientes
+==============================================================================
+Executado em: 2026-10-24T22:03:48
+Python 3.11.9 | langgraph 1.2.17 | langgraph-checkpoint-sqlite 3.1.2 | langchain-core 1.7.0
+LLM: SIMULADO (GenericFakeChatModel com respostas predefinidas). Rede bloqueada.
+Nenhuma chamada à OpenAI. Grafo, ferramenta, JSON, SQLite e main.py executados de verdade.
+Banco de testes: ~\.agente-linkedin\checkpoints_testes.sqlite
+
+--- Entrada ---
+Solicitação: 'Quero um post sobre a apresentação do meu projeto no workshop de IA aplicada.'
+Perfil: data/perfil_exemplo.json (Marina Alves, fatos F01–F03)
+
+--- Respostas PREDEFINIDAS do LLM simulado (não foram geradas por um LLM) ---
+  1. tool_call consultar_perfil(args={})
+  2. {"suficiente": true, "pergunta": null}
+  3. [MOCK] Apresentei um projeto de análise de dados no workshop de IA aplicada da universidade. Explicar o raciocínio por trás da análise foi um ótimo aprendizado. 💡
+  4. {"aprovado": true, "problemas_factuais": [], "problemas_estilo": []}
+
+--- Resultado esperado ---
+consultar_perfil executada uma vez; nenhum interrupt; geração e verificação;
+status aguardando_aprovacao; 0 revisões; 4 chamadas ao LLM.
+
+--- Resultado obtido ---
+thread_id: ac3-A-6056dc2f-ad2d-4c55-b452-94a0b000c225
+Sequência de nós (histórico do SQLite): decidir_acao → executar_ferramenta → observar_resultado → validar_informacoes → gerar_rascunho → verificar_rascunho
+Chamadas ao LLM simulado: 4
+  1. PROMPT_SISTEMA | ferramentas vinculadas=['consultar_perfil'] | mensagens=['SystemMessage', 'HumanMessage']
+  2. PROMPT_VALIDACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+  3. PROMPT_GERACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage', 'AIMessage', 'ToolMessage']
+  4. PROMPT_VERIFICACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+interrupts pendentes: [] | próximo nó: ()
+status: aguardando_aprovacao
+tentativas_revisao (revisões automáticas): 0
+esclarecimentos: None
+pergunta_pendente: None
+rascunho: '[MOCK] Apresentei um projeto de análise de dados no workshop de IA aplicada da universidade. Explicar o raciocínio por trás da análise foi um ótimo aprendizado. 💡'
+verificacao.aprovado: True
+verificacao.problemas_factuais: []
+verificacao.problemas_estilo: []
+mensagens: ['HumanMessage', 'AIMessage', 'ToolMessage', 'AIMessage']
+
+--- Verificações automáticas ---
+  [OK] Sequência sem solicitar_esclarecimento e sem revisar_rascunho
+  [OK] Nenhum interrupt pendente e execução encerrada
+  [OK] 4 chamadas ao LLM (decisão, validação, geração, verificação)
+  [OK] Ferramenta vinculada somente na decisão inicial
+  [OK] consultar_perfil executada uma única vez (1 ToolMessage)
+  [OK] Geração recebeu o resultado da ferramenta (ToolMessage no histórico)
+  [OK] contexto igual ao JSON de origem
+  [OK] Solicitação original preservada
+  [OK] Status aguardando_aprovacao
+  [OK] 0 revisões automáticas
+Resultado: 10/10 verificações atendidas.

@@ -1,0 +1,105 @@
+==============================================================================
+Teste B — Informação essencial ausente: interrupt, SQLite e retomada em outro processo
+==============================================================================
+Executado em: 2026-10-24T22:03:57
+Python 3.11.9 | langgraph 1.2.17 | langgraph-checkpoint-sqlite 3.1.2 | langchain-core 1.7.0
+LLM: SIMULADO (GenericFakeChatModel com respostas predefinidas). Rede bloqueada.
+Nenhuma chamada à OpenAI. Grafo, ferramenta, JSON, SQLite e main.py executados de verdade.
+Banco de testes: ~\.agente-linkedin\checkpoints_testes.sqlite
+
+--- Entrada ---
+Solicitação (processo 1): 'Quero um post sobre a apresentação do meu projeto no workshop de IA aplicada.'
+Resposta humana fictícia (processo 2): 'O projeto analisou dados fictícios de evasão escolar.'
+
+--- Processo 1 — respostas PREDEFINIDAS do LLM simulado (não foram geradas por um LLM) ---
+  1. tool_call consultar_perfil(args={})
+  2. {"suficiente": false, "pergunta": "Qual foi o tema do projeto de análise de dados que você apresentou?"}
+
+--- Processo 2 — respostas PREDEFINIDAS do LLM simulado (não foram geradas por um LLM) ---
+  1. {"suficiente": true, "pergunta": null}
+  2. [MOCK] No workshop de IA aplicada, apresentei meu projeto de análise de dados sobre evasão escolar. Foi muito bom compartilhar o raciocínio por trás da análise. 💡
+  3. {"aprovado": true, "problemas_factuais": [], "problemas_estilo": []}
+Observação: a avaliação de que falta o tema do projeto é predefinida no mock.
+
+--- Resultado esperado ---
+Processo 1: interrupt com a pergunta e o thread_id; estado salvo sem rascunho.
+Processo 2: Command(resume) no mesmo thread_id; sem nova consulta ao perfil;
+esclarecimento chega à geração e à verificação; status aguardando_aprovacao.
+
+--- Processo 1 (PID 5548) — python main.py — saída real do terminal ---
+Solicitação: thread_id da execução: d2d52ce5-51e6-45c0-930a-188b4d82dfa3
+
+O agente precisa de um esclarecimento antes de continuar.
+Pergunta: Qual foi o tema do projeto de análise de dados que você apresentou?
+thread_id: d2d52ce5-51e6-45c0-930a-188b4d82dfa3
+Para responder: python main.py --resume d2d52ce5-51e6-45c0-930a-188b4d82dfa3
+Código de saída: 0
+Chamadas ao LLM simulado: 2
+  1. PROMPT_SISTEMA | ferramentas vinculadas=['consultar_perfil'] | mensagens=['SystemMessage', 'HumanMessage']
+  2. PROMPT_VALIDACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+
+--- Inspeção do SQLite após o fim do processo 1 (processo de teste, PID 23864) ---
+próximo nó: ('solicitar_esclarecimento',)
+interrupts pendentes: [{'tipo': 'esclarecimento', 'pergunta': 'Qual foi o tema do projeto de análise de dados que você apresentou?'}]
+status: aguardando_esclarecimento
+tentativas_revisao (revisões automáticas): None
+esclarecimentos: None
+pergunta_pendente: 'Qual foi o tema do projeto de análise de dados que você apresentou?'
+rascunho: None
+mensagens: ['HumanMessage', 'AIMessage', 'ToolMessage']
+
+--- Processo 2 (PID 23604) — python main.py --resume d2d52ce5-51e6-45c0-930a-188b4d82dfa3 — saída real do terminal ---
+Pergunta: Qual foi o tema do projeto de análise de dados que você apresentou?
+Resposta: thread_id da execução: d2d52ce5-51e6-45c0-930a-188b4d82dfa3
+O modelo solicitou a ferramenta: consultar_perfil
+Perfil consultado com sucesso.
+Nome: Marina Alves
+Fatos autorizados: 3
+Exemplos de posts: 2
+
+Rascunho final:
+
+[MOCK] No workshop de IA aplicada, apresentei meu projeto de análise de dados sobre evasão escolar. Foi muito bom compartilhar o raciocínio por trás da análise. 💡
+
+Verificação: aprovado
+Revisões automáticas: 0
+Status: aguardando_aprovacao
+
+Estado salvo em ~\.agente-linkedin\checkpoints_testes.sqlite (thread_id: d2d52ce5-51e6-45c0-930a-188b4d82dfa3)
+Código de saída: 0
+Chamadas ao LLM simulado: 3
+  1. PROMPT_VALIDACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+     esclarecimentos_usuario nos dados: ['O projeto analisou dados fictícios de evasão escolar.']
+  2. PROMPT_GERACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage', 'AIMessage', 'ToolMessage', 'HumanMessage']
+     esclarecimento no histórico: ['Esclarecimento do usuário à pergunta "Qual foi o tema do projeto de análise de dados que você apresentou?": O projeto analisou dados fictícios de evasão escolar.']
+  3. PROMPT_VERIFICACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+     esclarecimentos_usuario nos dados: ['O projeto analisou dados fictícios de evasão escolar.']
+
+--- Estado final recuperado do SQLite ---
+Sequência de nós (histórico do SQLite): decidir_acao → executar_ferramenta → observar_resultado → validar_informacoes → solicitar_esclarecimento → validar_informacoes → gerar_rascunho → verificar_rascunho
+próximo nó: () | interrupts pendentes: []
+status: aguardando_aprovacao
+tentativas_revisao (revisões automáticas): 0
+esclarecimentos: ['O projeto analisou dados fictícios de evasão escolar.']
+pergunta_pendente: None
+rascunho: '[MOCK] No workshop de IA aplicada, apresentei meu projeto de análise de dados sobre evasão escolar. Foi muito bom compartilhar o raciocínio por trás da análise. 💡'
+verificacao.aprovado: True
+verificacao.problemas_factuais: []
+verificacao.problemas_estilo: []
+mensagens: ['HumanMessage', 'AIMessage', 'ToolMessage', 'HumanMessage', 'AIMessage']
+
+--- Verificações automáticas ---
+  [OK] Processo 1 terminou normalmente (código 0)
+  [OK] Terminal mostrou a pergunta, o thread_id e o comando de retomada
+  [OK] Execução suspensa em solicitar_esclarecimento com interrupt do tipo esclarecimento
+  [OK] Estado pausado sem rascunho e sem verificação
+  [OK] Processos 1 e 2 distintos (PIDs diferentes)
+  [OK] Processo 2 terminou normalmente (código 0)
+  [OK] Processo 2 não repetiu a decisão nem a consulta ao perfil
+  [OK] Processo 2 fez validação, geração e verificação
+  [OK] Esclarecimento chegou ao histórico enviado à geração
+  [OK] Esclarecimento chegou aos dados da verificação
+  [OK] Esclarecimento armazenado no estado e pergunta pendente limpa
+  [OK] Solicitação original preservada
+  [OK] Status aguardando_aprovacao e 0 revisões
+Resultado: 13/13 verificações atendidas.

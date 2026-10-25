@@ -248,3 +248,13 @@ __pycache__/
 
 # Evidências da AC3 (exceção à regra geral *.log)
 !evidencias/*.log
+
+# Frontend de demonstração (web/): dependências e arquivos gerados
+web/node_modules/
+web/.next/
+web/next-env.d.ts
+web/*.tsbuildinfo
+
+
+# Arquivo auxiliar gerado pelo Next.js
+web/AGENTS.md
