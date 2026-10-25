@@ -245,3 +245,6 @@ checkpoints/
 # Arquivos temporários
 __pycache__/
 .pytest_cache/
+
+# Evidências da AC3 (exceção à regra geral *.log)
+!evidencias/*.log

@@ -1,0 +1,53 @@
+==============================================================================
+Teste B (complementar) — Problema da resposta vazia na retomada e ajuste aplicado
+==============================================================================
+Executado em: 2026-10-24T22:03:48
+Python 3.11.9 | langgraph 1.2.17 | langgraph-checkpoint-sqlite 3.1.2 | langchain-core 1.7.0
+LLM: SIMULADO (GenericFakeChatModel com respostas predefinidas). Rede bloqueada.
+Nenhuma chamada à OpenAI. Grafo, ferramenta, JSON, SQLite e main.py executados de verdade.
+Banco de testes: ~\.agente-linkedin\checkpoints_testes.sqlite
+
+--- Parte 1 — Mecanismo do problema, reproduzido num grafo MÍNIMO (não é o código do agente) ---
+Um nó que lança exceção ao receber resposta vazia após interrupt().
+  Command(resume='   ') -> ValueError: resposta vazia
+  Command(resume='resposta válida') -> ValueError: resposta vazia
+Conclusão: a resposta vazia fica registrada no checkpoint e é reaproveitada;
+até a resposta válida falha, e o thread não pode mais ser retomado.
+
+--- Parte 2 — Agente atual (solicitar_esclarecimento repete o interrupt) ---
+
+--- Respostas PREDEFINIDAS do LLM simulado (não foram geradas por um LLM) ---
+  1. tool_call consultar_perfil(args={})
+  2. {"suficiente": false, "pergunta": "Qual foi o tema do projeto de análise de dados que você apresentou?"}
+  3. {"suficiente": true, "pergunta": null}
+  4. [MOCK] No workshop de IA aplicada, apresentei meu projeto de análise de dados sobre evasão escolar. Foi muito bom compartilhar o raciocínio por trás da análise. 💡
+  5. {"aprovado": true, "problemas_factuais": [], "problemas_estilo": []}
+Após Command(resume='   '):
+  próximo nó: ('solicitar_esclarecimento',)
+  interrupts pendentes: [{'tipo': 'esclarecimento', 'pergunta': 'Qual foi o tema do projeto de análise de dados que você apresentou?', 'aviso': 'A resposta anterior estava vazia.'}]
+  esclarecimentos: None
+Após Command(resume='O projeto analisou dados fictícios de evasão escolar.'):
+status: aguardando_aprovacao
+tentativas_revisao (revisões automáticas): 0
+esclarecimentos: ['O projeto analisou dados fictícios de evasão escolar.']
+pergunta_pendente: None
+rascunho: '[MOCK] No workshop de IA aplicada, apresentei meu projeto de análise de dados sobre evasão escolar. Foi muito bom compartilhar o raciocínio por trás da análise. 💡'
+verificacao.aprovado: True
+verificacao.problemas_factuais: []
+verificacao.problemas_estilo: []
+mensagens: ['HumanMessage', 'AIMessage', 'ToolMessage', 'HumanMessage', 'AIMessage']
+
+--- Parte 3 — main.py --resume com resposta vazia (processo separado) ---
+Pergunta: Qual foi o tema do projeto de análise de dados que você apresentou?
+Resposta:
+[stderr] Erro: a resposta não pode ser vazia. A execução continua aguardando.
+Código de saída: 1 | chamadas ao LLM: 0
+Depois: próximo nó = ('solicitar_esclarecimento',) (o thread continua aguardando)
+
+--- Verificações automáticas ---
+  [OK] Grafo mínimo: resposta válida também falha depois da vazia (problema reproduzido)
+  [OK] Agente: resposta vazia gera novo interrupt com aviso, sem registrar esclarecimento
+  [OK] Agente: resposta válida depois da vazia é aceita e o fluxo conclui
+  [OK] main.py: resposta vazia recusada antes de chamar o grafo (código 1, 0 chamadas ao LLM)
+  [OK] main.py: thread continua aguardando esclarecimento
+Resultado: 5/5 verificações atendidas.

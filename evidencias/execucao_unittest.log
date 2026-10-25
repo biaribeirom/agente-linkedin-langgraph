@@ -1,0 +1,9 @@
+test_A_informacoes_suficientes (__main__.TestesAC3.test_A_informacoes_suficientes) ... ok
+test_B2_resposta_vazia_na_retomada (__main__.TestesAC3.test_B2_resposta_vazia_na_retomada) ... ok
+test_B_esclarecimento_entre_processos (__main__.TestesAC3.test_B_esclarecimento_entre_processos) ... ok
+test_C_fato_nao_autorizado (__main__.TestesAC3.test_C_fato_nao_autorizado) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 25.457s
+
+OK

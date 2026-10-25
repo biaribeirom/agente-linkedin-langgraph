@@ -1,0 +1,72 @@
+==============================================================================
+Teste C — Rascunho com fatos não autorizados: reprovação, uma revisão e nova verificação
+==============================================================================
+Executado em: 2026-10-24T22:04:13
+Python 3.11.9 | langgraph 1.2.17 | langgraph-checkpoint-sqlite 3.1.2 | langchain-core 1.7.0
+LLM: SIMULADO (GenericFakeChatModel com respostas predefinidas). Rede bloqueada.
+Nenhuma chamada à OpenAI. Grafo, ferramenta, JSON, SQLite e main.py executados de verdade.
+Banco de testes: ~\.agente-linkedin\checkpoints_testes.sqlite
+
+--- Entrada ---
+Solicitação: 'Quero um post sobre a apresentação do meu projeto no workshop de IA aplicada.'
+
+--- Respostas PREDEFINIDAS do LLM simulado (não foram geradas por um LLM) ---
+  1. tool_call consultar_perfil(args={})
+  2. {"suficiente": true, "pergunta": null}
+  3. [MOCK] Como Cientista de Dados Sênior na DataX, venci o workshop de IA aplicada com um modelo de 98% de acurácia! 🚀🔥 Inovação disruptiva sempre!
+  4. {"aprovado": false, "problemas_factuais": ["'Cientista de Dados Sênior na DataX': cargo e empresa sem suporte; F01 indica apenas que Marina cursa graduação.", "'venci o workshop': conquista sem suporte; F02 e F03 indicam apenas participação e apresentação.", "'98% de acurácia': número sem suporte nos fatos autorizados."], "problemas_estilo": ["Dois emojis; o limite é um.", "'Inovação disruptiva sempre!': frase genérica e exagerada."]}
+  5. [MOCK] Apresentei um projeto de análise de dados no workshop de IA aplicada da universidade. Explicar o raciocínio por trás da análise foi um ótimo aprendizado. 💡
+  6. {"aprovado": true, "problemas_factuais": [], "problemas_estilo": []}
+Observação: o rascunho com fatos inventados, a reprovação, o texto revisado e a
+aprovação final são todos predefinidos. O teste demonstra o controle do fluxo,
+não a capacidade de detectar ou corrigir fatos.
+
+--- Resultado esperado ---
+Primeira verificação reprova com problemas factuais e de estilo separados;
+uma revisão recebe os problemas; segunda verificação aprova;
+status aguardando_aprovacao; 1 revisão; 6 chamadas ao LLM.
+
+--- Resultado obtido ---
+thread_id: ac3-C-d50c6d85-abbe-4b0a-af16-5cdd9c8bba89
+Sequência de nós (histórico do SQLite): decidir_acao → executar_ferramenta → observar_resultado → validar_informacoes → gerar_rascunho → verificar_rascunho → revisar_rascunho → verificar_rascunho
+Chamadas ao LLM simulado: 6
+  1. PROMPT_SISTEMA | ferramentas vinculadas=['consultar_perfil'] | mensagens=['SystemMessage', 'HumanMessage']
+  2. PROMPT_VALIDACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+  3. PROMPT_GERACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage', 'AIMessage', 'ToolMessage']
+  4. PROMPT_VERIFICACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+  5. PROMPT_REVISAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+  6. PROMPT_VERIFICACAO | ferramentas vinculadas=None | mensagens=['SystemMessage', 'HumanMessage']
+Primeira verificação (recuperada do histórico do SQLite):
+  status: em_revisao
+  rascunho avaliado: '[MOCK] Como Cientista de Dados Sênior na DataX, venci o workshop de IA aplicada com um modelo de 98% de acurácia! 🚀🔥 Inovação disruptiva sempre!'
+  problemas_factuais: ["'Cientista de Dados Sênior na DataX': cargo e empresa sem suporte; F01 indica apenas que Marina cursa graduação.", "'venci o workshop': conquista sem suporte; F02 e F03 indicam apenas participação e apresentação.", "'98% de acurácia': número sem suporte nos fatos autorizados."]
+  problemas_estilo: ['Dois emojis; o limite é um.', "'Inovação disruptiva sempre!': frase genérica e exagerada."]
+Dados recebidos pela revisão:
+  rascunho_anterior: '[MOCK] Como Cientista de Dados Sênior na DataX, venci o workshop de IA aplicada com um modelo de 98% de acurácia! 🚀🔥 Inovação disruptiva sempre!'
+  problemas_factuais: 3 | problemas_estilo: 2
+
+--- Estado final ---
+status: aguardando_aprovacao
+tentativas_revisao (revisões automáticas): 1
+esclarecimentos: None
+pergunta_pendente: None
+rascunho: '[MOCK] Apresentei um projeto de análise de dados no workshop de IA aplicada da universidade. Explicar o raciocínio por trás da análise foi um ótimo aprendizado. 💡'
+verificacao.aprovado: True
+verificacao.problemas_factuais: []
+verificacao.problemas_estilo: []
+mensagens: ['HumanMessage', 'AIMessage', 'ToolMessage', 'AIMessage', 'AIMessage']
+
+--- Verificações automáticas ---
+  [OK] Sequência com exatamente uma revisão e duas verificações
+  [OK] 6 chamadas ao LLM na ordem esperada
+  [OK] Primeira verificação reprovou com status em_revisao
+  [OK] Problemas factuais e de estilo registrados separadamente
+  [OK] Revisão recebeu o rascunho anterior e os problemas apontados
+  [OK] Revisão sem ferramentas vinculadas
+  [OK] Rascunho final é o texto revisado
+  [OK] Verificação final aprovada
+  [OK] 1 revisão automática
+  [OK] Status aguardando_aprovacao
+  [OK] consultar_perfil executada uma única vez
+  [OK] Solicitação original preservada
+Resultado: 12/12 verificações atendidas.
